@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/modernist-0a6cafe6-fc9f-4d19-b3b1-ba07c4c737e9/styles.css">
+<script src="_ds/modernist-0a6cafe6-fc9f-4d19-b3b1-ba07c4c737e9/_ds_bundle.js"></script>
+<style>
+:root{--color-bg:#121110;--color-surface:#1b1a19;--color-text:#f3f2f2;--color-divider:rgba(243,242,242,.3);--pl-s2:#252322;--pl-rule:rgba(243,242,242,.09);--pl-muted:#a19d9d;--pl-hit:#41c975;--pl-miss:#ff563c}
+html,body{margin:0;height:100%;background:var(--color-bg);color:var(--color-text);font-family:var(--font-body);font-size:13px;font-variant-numeric:tabular-nums}
+a{color:var(--color-text)}a:hover{color:var(--pl-hit)}
+*::-webkit-scrollbar{width:10px;height:10px}*::-webkit-scrollbar-thumb{background:#2f2d2c}*::-webkit-scrollbar-track{background:transparent}
+input[type=range]{accent-color:#f3f2f2}
+</style>
+</helmet>
+<div style="display:grid;grid-template-columns:216px minmax(0,1fr);height:100vh;overflow:hidden;background:var(--color-bg);color:var(--color-text)">
+
+<aside style="display:flex;flex-direction:column;border-right:2px solid var(--color-divider);min-height:0">
+  <div style="height:58px;flex:none;display:flex;align-items:center;gap:10px;padding:0 20px;border-bottom:2px solid var(--color-divider)">
+    <div style="display:flex;gap:2px;align-items:flex-end"><span style="width:7px;height:20px;background:var(--pl-hit)"></span><span style="width:7px;height:13px;background:var(--pl-miss)"></span><span style="width:7px;height:16px;background:var(--color-text)"></span></div>
+    <span style="font-weight:800;font-size:19px;letter-spacing:-.02em">PropLab</span>
+  </div>
+  <nav style="display:flex;flex-direction:column;padding:14px 0;gap:2px">
+    <span style="padding:0 20px 8px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--pl-muted);font-weight:600">Research</span>
+    <button onClick="{{ goToday }}" style="all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:12px;padding:10px 20px;font-size:13.5px;font-weight:{{ nav.today.w }};color:{{ nav.today.fg }};background:{{ nav.today.bg }}" style-hover="color:#f3f2f2">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="7" x="3" y="3"></rect><rect width="7" height="7" x="14" y="3"></rect><rect width="7" height="7" x="14" y="14"></rect><rect width="7" height="7" x="3" y="14"></rect></svg>
+      <span style="flex:1">Today's Props</span><span style="font-size:11px;color:var(--pl-muted)">{{ propCount }}</span>
+    </button>
+    <button onClick="{{ goCheat }}" style="all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:12px;padding:10px 20px;font-size:13.5px;font-weight:{{ nav.cheat.w }};color:{{ nav.cheat.fg }};background:{{ nav.cheat.bg }}" style-hover="color:#f3f2f2">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3"></rect><path d="M3 9h18M3 15h18M12 3v18"></path></svg>
+      <span style="flex:1">Cheatsheet</span>
+    </button>
+    <button onClick="{{ goPlayer }}" style="all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:12px;padding:10px 20px;font-size:13.5px;font-weight:{{ nav.player.w }};color:{{ nav.player.fg }};background:{{ nav.player.bg }}" style-hover="color:#f3f2f2">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      <span style="flex:1">Player Research</span>
+    </button>
+    <button onClick="{{ goProp }}" style="all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:12px;padding:10px 20px;font-size:13.5px;font-weight:{{ nav.prop.w }};color:{{ nav.prop.fg }};background:{{ nav.prop.bg }}" style-hover="color:#f3f2f2">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M22 12h-4M6 12H2M12 6V2M12 22v-4"></path></svg>
+      <span style="flex:1">Prop Research</span>
+    </button>
+  </nav>
+  <div style="margin:4px 20px 0;padding-top:14px;border-top:2px solid var(--color-divider);display:flex;flex-direction:column;gap:8px">
+    <span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--pl-muted);font-weight:600">Recently viewed</span>
+    <sc-for list="{{ recent }}" as="rc" hint-placeholder-count="0">
+      <button onClick="{{ rc.open }}" style="all:unset;cursor:pointer;display:flex;flex-direction:column;gap:1px;padding:4px 0" style-hover="color:var(--pl-hit)">
+        <span style="font-size:12.5px;font-weight:600">{{ rc.name }}</span><span style="font-size:11px;color:var(--pl-muted)">{{ rc.sub }}</span>
+      </button>
+    </sc-for>
+    <sc-if value="{{ noRecent }}" hint-placeholder-val="{{ true }}"><span style="font-size:11.5px;color:var(--pl-muted);white-space:nowrap">Open a prop to pin it here.</span></sc-if>
+  </div>
+  <div style="margin-top:auto;padding:14px 20px;border-top:2px solid var(--color-divider);font-size:11px;color:var(--pl-muted);display:flex;flex-direction:column;gap:3px">
+    <span style="display:flex;align-items:center;gap:6px"><span style="width:6px;height:6px;background:var(--pl-hit)"></span>Odds refreshed 2 min ago</span>
+    <span>Mock data · prototype</span>
+  </div>
+</aside>
+
+<div style="display:flex;flex-direction:column;min-width:0;min-height:0">
+  <header style="height:58px;flex:none;display:flex;align-items:center;gap:16px;padding:0 24px;border-bottom:2px solid var(--color-divider)">
+    <div style="display:flex;border:1px solid var(--color-divider)">
+      <sc-for list="{{ sportOpts }}" as="o" hint-placeholder-count="2">
+        <button onClick="{{ o.onClick }}" style="all:unset;cursor:pointer;padding:7px 16px;font-size:12.5px;font-weight:800;letter-spacing:.04em;background:{{ o.bg }};color:{{ o.fg }}">{{ o.label }}</button>
+      </sc-for>
+    </div>
+    <div style="position:relative;flex:1;max-width:440px">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position:absolute;left:11px;top:10px;color:var(--pl-muted)"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+      <input class="input" placeholder="Search NBA &amp; NFL players or teams" value="{{ q }}" onChange="{{ onQ }}" onFocus="{{ qFocus }}" onBlur="{{ qBlur }}" onKeyDown="{{ qKey }}" style="padding-left:34px;height:36px;font-size:13px;border-color:rgba(243,242,242,.18)">
+      <sc-if value="{{ qShow }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;top:40px;left:0;right:0;z-index:30;background:var(--color-surface);border:1px solid var(--color-divider);box-shadow:0 12px 32px rgba(0,0,0,.5);display:flex;flex-direction:column">
+          <sc-for list="{{ qResults }}" as="r">
+            <button onMouseDown="{{ r.pick }}" style="all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--pl-rule);background:{{ r.bg }}" style-hover="background:var(--pl-s2)">
+              <span style="width:26px;height:26px;display:grid;place-items:center;background:var(--pl-s2);font-size:10px;font-weight:800;color:var(--pl-muted)">{{ r.initials }}</span>
+              <span style="flex:1;font-weight:600">{{ r.name }}</span>
+              <span style="font-size:11px;color:var(--pl-muted)">{{ r.sub }}</span>
+              <span style="font-size:10px;font-weight:800;padding:2px 5px;border:1px solid var(--color-divider)">{{ r.sport }}</span>
+            </button>
+          </sc-for>
+          <sc-if value="{{ qEmpty }}"><div style="padding:12px;color:var(--pl-muted)">No players match “{{ q }}”</div></sc-if>
+        </div>
+      </sc-if>
+    </div>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:14px">
+      <span style="font-size:12px;color:var(--pl-muted);white-space:nowrap">{{ slateSummary }}</span>
+      <div style="position:relative">
+        <button onClick="{{ toggleDate }}" style="all:unset;cursor:pointer;white-space:nowrap;flex:none;display:flex;align-items:center;gap:8px;padding:0 12px;height:34px;border:1px solid var(--color-divider);font-size:12.5px;font-weight:600" style-hover="background:var(--pl-s2)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4M16 2v4"></path><rect width="18" height="18" x="3" y="4"></rect><path d="M3 10h18"></path></svg>
+          Today · Thu, Sep 25
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg>
+        </button>
+        <sc-if value="{{ dateOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;right:0;top:40px;z-index:30;width:240px;background:var(--color-surface);border:1px solid var(--color-divider);box-shadow:0 12px 32px rgba(0,0,0,.5)">
+            <sc-for list="{{ dateOpts }}" as="d">
+              <button onClick="{{ d.onClick }}" style="all:unset;box-sizing:border-box;width:100%;cursor:{{ d.cursor }};display:flex;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--pl-rule);color:{{ d.fg }}" style-hover="background:var(--pl-s2)">
+                <span style="font-weight:600">{{ d.label }}</span><span style="font-size:11px;color:var(--pl-muted)">{{ d.note }}</span>
+              </button>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </header>
+
+  <main ref="{{ mainRef }}" style="flex:1;overflow:auto;min-height:0">
+
+  <sc-if value="{{ isToday }}" hint-placeholder-val="{{ true }}">
+    <div style="padding:24px 28px 56px;display:flex;flex-direction:column;gap:18px">
+      <div style="display:flex;align-items:flex-end;gap:24px;flex-wrap:wrap">
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--pl-muted);font-weight:600">{{ sportLabel }} · Today's slate</span>
+          <h1 style="margin:0;font-size:30px">Today's Props</h1>
+        </div>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+          <span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--pl-muted);font-weight:600">Sort &amp; average by</span>
+          <div style="display:flex;border:1px solid var(--color-divider)">
+            <sc-for list="{{ rangeOpts }}" as="o" hint-placeholder-count="4"><button onClick="{{ o.onClick }}" style="all:unset;cursor:pointer;padding:6px 12px;font-size:12px;font-weight:700;background:{{ o.bg }};color:{{ o.fg }}">{{ o.label }}</button></sc-for>
+          </div>
+        </div>
+      </div>
+      <div style="border-top:2px solid var(--color-divider);border-bottom:2px solid var(--color-divider);display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:20px">
+        <span style="padding:12px 0;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--pl-muted);font-weight:600;align-self:center">Game</span>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;padding:10px 0">
+          <sc-for list="{{ gameChips }}" as="c" hint-placeholder-count="5"><button onClick="{{ c.onClick }}" style="all:unset;cursor:pointer;padding:5px 10px;font-size:12px;font-weight:600;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</button></sc-for>
+        </div>
+        <span style="padding:12px 0;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--pl-muted);font-weight:600;align-self:center;border-top:1px solid var(--pl-rule)">Market</span>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;padding:10px 0;border-top:1px solid var(--pl-rule)">
+          <sc-for list="{{ marketChips }}" as="c" hint-placeholder-count="6"><button onClick="{{ c.onClick }}" style="all:unset;cursor:pointer;padding:5px 10px;font-size:12px;font-weight:600;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</button></sc-for>
+        </div>
+        <span style="padding:12px 0;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--pl-muted);font-weight:600;align-self:center;border-top:1px solid var(--pl-rule)">Book</span>
+        <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--pl-rule)">
+          <select value="{{ tBook }}" onChange="{{ onTBook }}" style="height:30px;padding:0 8px;background:var(--color-surface);color:var(--color-text);border:1px solid var(--color-divider);border-radius:0;font:inherit;font-size:12px">
+            <option value="best">Best available</option><option value="dk">DraftKings</option><option value="fd">FanDuel</option><option value="mgm">BetMGM</option><option value="czr">Caesars</option><option value="espn">ESPN Bet</option>
+          </select>
+          <span style="font-size:12px;color:var(--pl-muted)">{{ todayCount }}</span>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px">
+        <sc-for list="{{ cards }}" as="c" hint-placeholder-count="9">
+          <button onClick="{{ c.open }}" style="all:unset;box-sizing:border-box;cursor:pointer;background:var(--color-surface);display:flex;flex-direction:column;gap:14px;padding:14px;min-width:0" style-hover="background:#22201f">
+            <div style="display:flex;gap:11px;align-items:center">
+              <span style="width:42px;height:42px;flex:none;display:grid;place-items:center;background:repeating-linear-gradient(135deg,#262423 0 6px,#2c2a29 6px 12px);font-size:12px;font-weight:800;color:var(--pl-muted)">{{ c.initials }}</span>
+              <div style="display:flex;flex-direction:column;gap:2px;min-width:0;flex:1">
+                <span style="font-size:14.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ c.name }}</span>
+                <span style="font-size:11.5px;color:var(--pl-muted);white-space:nowrap">{{ c.matchup }} · {{ c.time }}</span>
+              </div>
+              <sc-if value="{{ c.statusShow }}"><span style="font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:3px 6px;background:{{ c.statusBg }};color:{{ c.statusFg }}">{{ c.status }}</span></sc-if>
+            </div>
+            <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px;border-top:1px solid var(--pl-rule);padding-top:12px">
+              <div style="display:flex;flex-direction:column;gap:2px">
+                <span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--pl-muted);font-weight:600">{{ c.market }}</span>
+                <span style="font-size:22px;font-weight:800;letter-spacing:-.01em;line-height:1.1">O/U {{ c.line }}</span>
+              </div>
+              <div style="display:flex;gap:14px;text-align:right">
+                <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:10px;letter-spacing:.08em;color:var(--pl-muted);font-weight:600">{{ c.rl }} AVG</span><span style="font-size:15px;font-weight:800">{{ c.avg }}</span></div>
+                <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:10px;letter-spacing:.08em;color:var(--pl-muted);font-weight:600">MED</span><span style="font-size:15px;font-weight:800">{{ c.med }}</span></div>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px">
+              <div style="display:flex;align-items:center;gap:8px;padding:7px 9px;background:var(--pl-s2)">
+                <span style="font-size:10.5px;color:var(--pl-muted);font-weight:600">OVER</span><span style="font-weight:800;font-size:13.5px;flex:1">{{ c.over }}</span>
+                <span style="font-size:9.5px;font-weight:800;padding:2px 4px;border:1px solid var(--color-divider);color:#d8d5d5">{{ c.overBook }}</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;padding:7px 9px;background:var(--pl-s2)">
+                <span style="font-size:10.5px;color:var(--pl-muted);font-weight:600">UNDER</span><span style="font-weight:800;font-size:13.5px;flex:1">{{ c.under }}</span>
+                <span style="font-size:9.5px;font-weight:800;padding:2px 4px;border:1px solid var(--color-divider);color:#d8d5d5">{{ c.underBook }}</span>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:2px">
+              <sc-for list="{{ c.chips }}" as="ch" hint-placeholder-count="4"><div style="background:{{ ch.bg }};padding:6px 8px;display:flex;flex-direction:column;gap:1px"><span style="font-size:9.5px;letter-spacing:.08em;font-weight:700;color:{{ ch.fg }};opacity:.75">{{ ch.label }}</span><span style="font-weight:800;font-size:14px;color:{{ ch.fg }}">{{ ch.txt }}</span></div></sc-for>
+            </div>
+          </button>
+        </sc-for>
+      </div>
+      <sc-if value="{{ cardsEmpty }}"><div style="padding:40px 0;color:var(--pl-muted)">No props match these filters.</div></sc-if>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isCheat }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:24px 28px 56px;display:flex;flex-direction:column;gap:18px">
+      <div style="display:flex;align-items:flex-end;gap:24px">
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--pl-muted);font-weight:600">{{ sportLabel }} · Full slate</span>
+          <h1 style="margin:0;font-size:30px">Cheatsheet</h1>
+        </div>
+        <span style="margin-left:auto;font-size:12px;color:var(--pl-muted)">{{ cheatCount }}</span>
+      </div>
+      <div style="border-top:2px solid var(--color-divider);border-bottom:2px solid var(--color-divider);display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:1px;overflow:hidden">
+        <div style="display:flex;flex-direction:column;gap:8px;padding:12px 16px 12px 0;box-shadow:1px 0 0 var(--pl-rule),0 1px 0 var(--pl-rule)">
+          <span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--pl-muted);font-weight:600">Sport</span>
+          <div style="display:flex;border:1px solid var(--color-divider);align-self:flex-start">
+            <sc-for list="{{ sportOpts }}" as="o"><button onClick="{{ o.onClick }}" style="all:unset;cursor:pointer;padding:5px 12px;font-size:12px;font-weight:800;background:{{ o.bg }};color:{{ o.fg }}">{{ o.label }}</button></sc-for>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;padding:12px 16px 12px 0;box-shadow:1px 0 0 var(--pl-rule),0 1px 0 var(--pl-rule)">
+          <span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--pl-muted);font-weight:600">Market</span>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            <sc-for list="{{ cMarketChips }}" as="c"><button onClick="{{ c.onClick }}" style="all:unset;cursor:pointer;padding:4px 10px;font-size:12px;font-weight:600;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</button></sc-for>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;padding:12px 16px 12px 0;box-shadow:1px 0 0 var(--pl-rule),0 1px 0 var(--pl-rule)">
+          <span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--pl-muted);font-weight:600">Book</span>
+          <select value="{{ cBook }}" onChange="{{ onCBook }}" style="height:28px;padding:0 8px;background:var(--color-surface);color:var(--color-text);border:1px solid var(--color-divider);border-radius:0;font:inherit;font-size:12px">
+            <option value="best">Best available</option><option value="dk">DraftKings</option><option value="fd">FanDuel</option><option value="mgm">BetMGM</option><option value="czr">Caesars</option><option value="espn">ESPN Bet</option>
+          </select>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;padding:12px 16px 12px 0;box-shadow:1px 0 0 var(--pl-rule),0 1px 0 var(--pl-rule)">
+          <span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--pl-muted);font-weight:600">Hit-rate basis</span>
+          <div style="display:flex;border:1px solid var(--color-divider);align-self:flex-start">
+            <sc-for list="{{ rangeOpts }}" as="o"><button onClick="{{ o.onClick }}" style="all:unset;cursor:pointer;padding:5px 10px;font-size:12px;font-weight:700;background:{{ o.bg }};color:{{ o.fg }}">{{ o.label }}</button></sc-for>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;padding:12px 16px 12px 0;box-shadow:1px 0 0 var(--pl-rule),0 1px 0 var(--pl-rule)">
+          <span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--pl-muted);font-weight:600;display:flex;justify-content:space-between">Min hit rate <b style="color:var(--color-text)">{{ cMinTxt }}</b></span>
+          <input type="range" min="0" max="100" step="5" value="{{ cMin }}" onChange="{{ onCMin }}">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;padding:12px 16px 12px 0;box-shadow:1px 0 0 var(--pl-rule),0 1px 0 var(--pl-rule)">
+          <span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--pl-muted);font-weight:600;display:flex;justify-content:space-between">Min sample <b style="color:var(--color-text)">{{ cMinNTxt }}</b></span>
+          <input type="range" min="0" max="{{ cMaxN }}" step="1" value="{{ cMinN }}" onChange="{{ onCMinN }}">
+        </div>
+        <div style="display:flex;align-items:flex-end;padding:12px 16px 12px 0;box-shadow:1px 0 0 var(--pl-rule),0 1px 0 var(--pl-rule)">
+          <button class="btn btn-secondary" onClick="{{ resetCheat }}" style="font-size:12px;padding:5px 10px">Reset</button>
+        </div>
+      </div>
+      <div>
+        <div style="min-width:1180px">
+          <div style="position:sticky;top:0;z-index:2;background:var(--color-bg);display:grid;grid-template-columns:minmax(190px,2.2fr) repeat(13,minmax(56px,1fr));border-bottom:2px solid var(--color-divider)">
+            <sc-for list="{{ cols }}" as="h" hint-placeholder-count="14">
+              <button onClick="{{ h.sort }}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:10px 8px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:{{ h.fg }};display:flex;gap:4px;justify-content:{{ h.jc }}" style-hover="color:#f3f2f2">{{ h.label }}<span>{{ h.arrow }}</span></button>
+            </sc-for>
+          </div>
+          <sc-for list="{{ rows }}" as="r" hint-placeholder-count="12">
+            <div onClick="{{ r.open }}" style="cursor:pointer;display:grid;grid-template-columns:minmax(190px,2.2fr) repeat(13,minmax(56px,1fr));align-items:center;border-bottom:1px solid var(--pl-rule);font-size:12.5px;min-height:38px" style-hover="background:var(--color-surface)">
+              <div style="padding:6px 8px;display:flex;align-items:center;gap:9px;min-width:0"><span style="width:24px;height:24px;flex:none;display:grid;place-items:center;background:var(--pl-s2);font-size:9.5px;font-weight:800;color:var(--pl-muted)">{{ r.initials }}</span><span style="font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.name }}</span><span style="font-size:11px;color:var(--pl-muted)">{{ r.pos }}</span></div>
+              <div style="padding:6px 8px">{{ r.team }}</div>
+              <div style="padding:6px 8px;color:var(--pl-muted)">{{ r.opp }}</div>
+              <div style="padding:6px 8px">{{ r.market }}</div>
+              <div style="padding:6px 8px;text-align:right;font-weight:800">{{ r.line }}</div>
+              <div style="padding:6px 8px;text-align:right;font-weight:700">{{ r.odds }}</div>
+              <div style="padding:6px 8px"><span style="font-size:9.5px;font-weight:800;padding:2px 4px;border:1px solid var(--color-divider)">{{ r.book }}</span></div>
+              <sc-for list="{{ r.chips }}" as="ch"><div style="padding:3px 4px"><div style="background:{{ ch.bg }};color:{{ ch.fg }};font-weight:800;text-align:center;padding:4px 0">{{ ch.txt }}</div></div></sc-for>
+              <div style="padding:6px 8px;text-align:right">{{ r.avg }}</div>
+              <div style="padding:6px 8px;text-align:right">{{ r.med }}</div>
+              <div style="padding:6px 8px;text-align:right;color:var(--pl-muted)">{{ r.n }}</div>
+            </div>
+          </sc-for>
+          <sc-if value="{{ rowsEmpty }}"><div style="padding:40px 8px;color:var(--pl-muted)">No props clear these filters. Lower the minimum hit rate or sample size.</div></sc-if>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isPlayer }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:24px 28px 56px;display:flex;flex-direction:column;gap:20px">
+      <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+        <span style="width:72px;height:72px;flex:none;display:grid;place-items:center;background:repeating-linear-gradient(135deg,#262423 0 8px,#2c2a29 8px 16px);font-size:20px;font-weight:800;color:var(--pl-muted)">{{ pv.initials }}</span>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--pl-muted);font-weight:600">Player Research · {{ sportLabel }}</span>
+          <div style="display:flex;align-items:center;gap:12px"><h1 style="margin:0;font-size:30px">{{ pv.name }}</h1><span style="font-size:10.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:4px 8px;background:{{ pv.statusBg }};color:{{ pv.statusFg }}">{{ pv.status }}</span></div>
+          <span style="font-size:13px;color:var(--pl-muted)">{{ pv.teamName }} · {{ pv.pos }} · #{{ pv.num }}</span>
+        </div>
+        <div style="margin-left:auto;display:flex;gap:0;border:1px solid var(--color-divider)">
+          <div style="display:flex;flex-direction:column;gap:3px;padding:10px 16px;border-right:1px solid var(--color-divider)"><span style="font-size:10px;letter-spacing:.08em;color:var(--pl-muted);font-weight:600">NEXT MATCHUP</span><span style="font-weight:800;font-size:14px">{{ pv.next }}</span></div>
+          <div style="display:flex;flex-direction:column;gap:3px;padding:10px 16px"><span style="font-size:10px;letter-spacing:.08em;color:var(--pl-muted);font-weight:600">TIP / KICK</span><span style="font-weight:800;font-size:14px">{{ pv.time }}</span></div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:flex-end;border-bottom:2px solid var(--color-divider);gap:4px;flex-wrap:wrap">
+        <sc-for list="{{ pv.tabs }}" as="t" hint-placeholder-count="4"><button onClick="{{ t.onClick }}" style="all:unset;cursor:pointer;padding:10px 14px;font-size:13px;font-weight:700;color:{{ t.fg }};box-shadow:inset 0 -3px 0 {{ t.bar }};margin-bottom:-2px" style-hover="color:#f3f2f2">{{ t.label }}</button></sc-for>
+        <button onClick="{{ pv.openProp }}" class="btn btn-ghost" style="margin-left:auto;margin-bottom:6px;white-space:nowrap;flex:none;color:var(--color-text);font-size:12.5px">Prop research · {{ pv.marketLabel }} {{ pv.line }}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"></path></svg></button>
+      </div>
+      <div style="display:grid;grid-template-columns:auto repeat(4,minmax(0,1fr));border:1px solid var(--color-divider)">
+        <div style="padding:14px 16px;display:flex;flex-direction:column;gap:8px;border-right:1px solid var(--color-divider)">
+          <span style="font-size:10px;letter-spacing:.08em;color:var(--pl-muted);font-weight:600">RANGE</span>
+          <div style="display:flex;border:1px solid var(--color-divider)">
+            <sc-for list="{{ rangeOpts }}" as="o"><button onClick="{{ o.onClick }}" style="all:unset;cursor:pointer;padding:6px 11px;font-size:12px;font-weight:700;background:{{ o.bg }};color:{{ o.fg }}">{{ o.label }}</button></sc-for>
+          </div>
+        </div>
+        <div style="padding:14px 16px;display:flex;flex-direction:column;gap:4px;border-right:1px solid var(--color-divider)"><span style="font-size:10px;letter-spacing:.08em;color:var(--pl-muted);font-weight:600">LINE</span><span style="font-size:24px;font-weight:800;line-height:1.1">{{ pv.line }}</span><span style="font-size:11px;color:var(--pl-muted)">{{ pv.marketLabel }}</span></div>
+        <div style="padding:14px 16px;display:flex;flex-direction:column;gap:4px;border-right:1px solid var(--color-divider);background:{{ pv.hitBg }}"><span style="font-size:10px;letter-spacing:.08em;color:var(--pl-muted);font-weight:600">HIT RATE · {{ pv.rangeLabel }}</span><span style="font-size:24px;font-weight:800;line-height:1.1;color:{{ pv.hitFg }}">{{ pv.hitPct }}</span><span style="font-size:11px;color:var(--pl-muted)">{{ pv.hitTxt }} over</span></div>
+        <div style="padding:14px 16px;display:flex;flex-direction:column;gap:4px;border-right:1px solid var(--color-divider)"><span style="font-size:10px;letter-spacing:.08em;color:var(--pl-muted);font-weight:600">AVERAGE</span><span style="font-size:24px;font-weight:800;line-height:1.1">{{ pv.avg }}</span><span style="font-size:11px;color:{{ pv.diffFg }}">{{ pv.diff }} vs line</span></div>
+        <div style="padding:14px 16px;display:flex;flex-direction:column;gap:4px"><span style="font-size:10px;letter-spacing:.08em;color:var(--pl-muted);font-weight:600">MEDIAN</span><span style="font-size:24px;font-weight:800;line-height:1.1">{{ pv.med }}</span><span style="font-size:11px;color:var(--pl-muted)">{{ pv.n }} games</span></div>
+      </div>
+      <div style="background:var(--color-surface);padding:18px 20px 14px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:18px;gap:16px;flex-wrap:wrap">
+          <span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--pl-muted);font-weight:600;white-space:nowrap">{{ pv.marketLabel }} · {{ pv.chartTitle }}</span>
+          <span style="display:flex;gap:16px;font-size:11px;color:var(--pl-muted)"><span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;background:var(--pl-hit)"></span>Over {{ pv.line }}</span><span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;background:var(--pl-miss)"></span>Under</span><span style="display:flex;align-items:center;gap:6px"><span style="width:16px;border-top:2px dashed #f3f2f2"></span>Prop line</span></span>
+        </div>
+        <div style="position:relative;height:250px;margin-left:34px">
+          <sc-for list="{{ pv.yTicks }}" as="t"><div style="position:absolute;left:0;right:0;bottom:{{ t.b }};border-top:1px solid var(--pl-rule)"><span style="position:absolute;left:-34px;top:-7px;font-size:10px;color:var(--pl-muted)">{{ t.v }}</span></div></sc-for>
+          <div style="position:absolute;inset:0;display:flex;align-items:flex-end;gap:{{ pv.gap }}">
+            <sc-for list="{{ pv.bars }}" as="b" hint-placeholder-count="10"><div title="{{ b.tip }}" style="flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;min-width:0" style-hover="opacity:.8"><span style="font-size:10.5px;font-weight:800;text-align:center;margin-bottom:3px;color:{{ b.fg }}">{{ b.lbl }}</span><div style="height:{{ b.h }};background:{{ b.bg }}"></div></div></sc-for>
+          </div>
+          <div style="position:absolute;left:0;right:0;bottom:{{ pv.linePct }};border-top:2px dashed #f3f2f2;pointer-events:none"><span style="position:absolute;right:0;top:-22px;font-size:11px;font-weight:800;background:#f3f2f2;color:#121110;padding:2px 6px">{{ pv.line }}</span></div>
+        </div>
+        <div style="display:flex;gap:{{ pv.gap }};margin-left:34px;margin-top:6px;border-top:2px solid var(--color-divider);padding-top:6px">
+          <sc-for list="{{ pv.bars }}" as="b"><span style="flex:1;min-width:0;text-align:center;font-size:10px;color:var(--pl-muted);overflow:hidden;white-space:nowrap">{{ b.x }}</span></sc-for>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px">
+        <sc-for list="{{ pv.splits }}" as="sp" hint-placeholder-count="2">
+          <div style="background:var(--color-surface);padding:16px;display:flex;flex-direction:column;gap:10px">
+            <span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--pl-muted);font-weight:600">{{ sp.label }}</span>
+            <div style="display:flex;align-items:baseline;gap:10px"><span style="font-size:26px;font-weight:800;color:{{ sp.fg }}">{{ sp.pct }}</span><span style="color:var(--pl-muted);font-size:12px">{{ sp.txt }} over {{ pv.line }}</span></div>
+            <div style="display:flex;gap:18px;border-top:1px solid var(--pl-rule);padding-top:10px;font-size:12px"><span><span style="color:var(--pl-muted)">Avg </span><b>{{ sp.avg }}</b></span><span><span style="color:var(--pl-muted)">Med </span><b>{{ sp.med }}</b></span><span><span style="color:var(--pl-muted)">Games </span><b>{{ sp.n }}</b></span></div>
+          </div>
+        </sc-for>
+        <div style="background:var(--color-surface);padding:16px;display:flex;flex-direction:column;gap:10px">
+          <span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--pl-muted);font-weight:600">vs {{ pv.opp }} · history</span>
+          <div style="display:flex;align-items:baseline;gap:10px"><span style="font-size:26px;font-weight:800;color:{{ pv.h2h.fg }}">{{ pv.h2h.pct }}</span><span style="color:var(--pl-muted);font-size:12px">{{ pv.h2h.txt }} over · avg {{ pv.h2h.avg }}</span></div>
+          <div style="display:flex;flex-direction:column;border-top:1px solid var(--pl-rule)">
+            <sc-for list="{{ pv.h2h.games }}" as="g"><div style="display:grid;grid-template-columns:48px 1fr auto auto;gap:10px;padding:6px 0;border-bottom:1px solid var(--pl-rule);font-size:12px;align-items:center"><span style="color:var(--pl-muted)">{{ g.date }}</span><span>{{ g.where }}</span><b>{{ g.val }}</b><span style="font-size:10px;font-weight:800;width:34px;text-align:center;padding:2px 0;background:{{ g.bg }};color:{{ g.fg }}">{{ g.res }}</span></div></sc-for>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding-bottom:10px"><h4 style="margin:0;font-size:16px">Game log</h4><span style="font-size:11.5px;color:var(--pl-muted);white-space:nowrap">{{ pv.rangeLabel }} · most recent first</span></div>
+        <div style="display:grid;grid-template-columns:70px 1fr 50px 60px 1fr 1fr 1fr 90px;border-bottom:2px solid var(--color-divider);border-top:2px solid var(--color-divider)">
+          <span style="padding:9px 8px;font-size:10.5px;letter-spacing:.08em;color:var(--pl-muted);font-weight:700">DATE</span><span style="padding:9px 8px;font-size:10.5px;letter-spacing:.08em;color:var(--pl-muted);font-weight:700">OPP</span><span style="padding:9px 8px;font-size:10.5px;letter-spacing:.08em;color:var(--pl-muted);font-weight:700">H/A</span><span style="padding:9px 8px;font-size:10.5px;letter-spacing:.08em;color:var(--pl-muted);font-weight:700">{{ pv.minLabel }}</span><span style="padding:9px 8px;font-size:10.5px;letter-spacing:.08em;color:var(--pl-muted);font-weight:700;text-align:right">{{ pv.statShort }}</span><span style="padding:9px 8px;font-size:10.5px;letter-spacing:.08em;color:var(--pl-muted);font-weight:700;text-align:right">LINE</span><span style="padding:9px 8px;font-size:10.5px;letter-spacing:.08em;color:var(--pl-muted);font-weight:700;text-align:right">+/−</span><span style="padding:9px 8px;font-size:10.5px;letter-spacing:.08em;color:var(--pl-muted);font-weight:700">RESULT</span>
+        </div>
+        <sc-for list="{{ pv.log }}" as="g" hint-placeholder-count="10">
+          <div style="display:grid;grid-template-columns:70px 1fr 50px 60px 1fr 1fr 1fr 90px;border-bottom:1px solid var(--pl-rule);font-size:12.5px;align-items:center" style-hover="background:var(--color-surface)">
+            <span style="padding:8px;color:var(--pl-muted)">{{ g.date }}</span><span style="padding:8px;font-weight:600">{{ g.opp }}</span><span style="padding:8px">{{ g.ha }}</span><span style="padding:8px;color:var(--pl-muted)">{{ g.min }}</span><span style="padding:8px;text-align:right;font-weight:800">{{ g.val }}</span><span style="padding:8px;text-align:right;color:var(--pl-muted)">{{ g.line }}</span><span style="padding:8px;text-align:right;color:{{ g.fg }}">{{ g.margin }}</span>
+            <span style="padding:6px 8px"><span style="display:inline-block;font-size:10px;font-weight:800;letter-spacing:.04em;width:44px;text-align:center;padding:3px 0;background:{{ g.bg }};color:{{ g.fg }}">{{ g.res }}</span></span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isProp }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:24px 28px 56px;display:flex;flex-direction:column;gap:20px">
+      <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+        <span style="width:64px;height:64px;flex:none;display:grid;place-items:center;background:repeating-linear-gradient(135deg,#262423 0 8px,#2c2a29 8px 16px);font-size:18px;font-weight:800;color:var(--pl-muted)">{{ rv.initials }}</span>
+        <div style="display:flex;flex-direction:column;gap:5px;min-width:0;flex:1 1 320px">
+          <span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--pl-muted);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%">Prop Research · {{ rv.name }} · {{ rv.matchup }} · {{ rv.time }}</span>
+          <h1 style="margin:0;font-size:32px;letter-spacing:-.02em">{{ rv.marketLabel }} O/U {{ rv.line }}</h1>
+          <span style="font-size:13px;color:var(--pl-muted)">{{ rv.lineNote }}</span>
+        </div>
+        <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+          <sc-if value="{{ rv.isAlt }}"><button onClick="{{ rv.resetAlt }}" class="btn btn-secondary" style="font-size:12.5px;white-space:nowrap;flex:none;justify-content:flex-start">Back to main line {{ rv.mainLine }}</button></sc-if>
+          <button onClick="{{ rv.openPlayer }}" class="btn" style="background:#f3f2f2;color:#121110;font-size:12.5px;white-space:nowrap;flex:none;justify-content:flex-start">Full player research<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"></path></svg></button>
+        </div>
+      </div>
+      <div style="display:flex;border-bottom:2px solid var(--color-divider);gap:4px">
+        <sc-for list="{{ rv.tabs }}" as="t" hint-placeholder-count="4"><button onClick="{{ t.onClick }}" style="all:unset;cursor:pointer;padding:10px 14px;font-size:13px;font-weight:700;color:{{ t.fg }};box-shadow:inset 0 -3px 0 {{ t.bar }};margin-bottom:-2px;display:flex;gap:8px" style-hover="color:#f3f2f2">{{ t.label }}<span style="font-weight:400;color:var(--pl-muted)">{{ t.line }}</span></button></sc-for>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:2px">
+        <sc-for list="{{ rv.chips }}" as="ch" hint-placeholder-count="4"><div style="background:{{ ch.bg }};padding:12px 14px;display:flex;flex-direction:column;gap:2px"><span style="font-size:10.5px;letter-spacing:.08em;font-weight:700;color:{{ ch.fg }};opacity:.75">{{ ch.label }} · O {{ rv.line }}</span><span style="font-weight:800;font-size:24px;color:{{ ch.fg }}">{{ ch.txt }}</span><span style="font-size:11px;color:{{ ch.fg }};opacity:.75">{{ ch.sub }}</span></div></sc-for>
+        <div style="grid-column:1/-1;background:var(--color-surface);padding:12px 14px;display:flex;flex-direction:column;gap:8px">
+          <span style="font-size:10.5px;letter-spacing:.08em;color:var(--pl-muted);font-weight:700">LAST 10 · OLDEST → NEWEST</span>
+          <div style="display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:2px;flex:1">
+            <sc-for list="{{ rv.strip }}" as="g"><div title="{{ g.tip }}" style="background:{{ g.bg }};color:#121110;font-weight:800;font-size:12px;display:grid;place-items:center;min-height:30px">{{ g.val }}</div></sc-for>
+          </div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start">
+        <div style="display:flex;flex-direction:column;gap:24px">
+          <div>
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding-bottom:10px"><h4 style="margin:0;font-size:16px">Sportsbook comparison</h4><span style="font-size:11.5px;color:var(--pl-muted);white-space:nowrap">Best price highlighted</span></div>
+            <div style="display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;border-top:2px solid var(--color-divider);border-bottom:2px solid var(--color-divider)">
+              <span style="padding:9px 8px;font-size:10.5px;letter-spacing:.08em;color:var(--pl-muted);font-weight:700">BOOK</span><span style="padding:9px 8px;font-size:10.5px;letter-spacing:.08em;color:var(--pl-muted);font-weight:700;text-align:right">LINE</span><span style="padding:9px 8px;font-size:10.5px;letter-spacing:.08em;color:var(--pl-muted);font-weight:700;text-align:right">OVER</span><span style="padding:9px 8px;font-size:10.5px;letter-spacing:.08em;color:var(--pl-muted);font-weight:700;text-align:right">UNDER</span>
+            </div>
+            <sc-for list="{{ rv.books }}" as="b" hint-placeholder-count="5">
+              <div style="display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;border-bottom:1px solid var(--pl-rule);align-items:stretch;font-size:13px">
+                <span style="padding:9px 8px;display:flex;align-items:center;gap:10px"><span style="width:36px;height:22px;display:grid;place-items:center;font-size:9.5px;font-weight:800;border:1px solid var(--color-divider)">{{ b.abbr }}</span><span style="font-weight:600">{{ b.name }}</span></span>
+                <span style="padding:9px 8px;text-align:right;font-weight:700;align-self:center;color:{{ b.lineFg }}">{{ b.line }}</span>
+                <span style="padding:9px 8px;text-align:right;font-weight:800;display:flex;align-items:center;justify-content:flex-end;gap:6px;background:{{ b.overBg }};color:{{ b.overFg }}"><sc-if value="{{ b.bestOver }}"><span style="font-size:9px;letter-spacing:.06em">BEST</span></sc-if>{{ b.over }}</span>
+                <span style="padding:9px 8px;text-align:right;font-weight:800;display:flex;align-items:center;justify-content:flex-end;gap:6px;background:{{ b.underBg }};color:{{ b.underFg }}"><sc-if value="{{ b.bestUnder }}"><span style="font-size:9px;letter-spacing:.06em">BEST</span></sc-if>{{ b.under }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div>
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding-bottom:10px"><h4 style="margin:0;font-size:16px">Alternate lines</h4><span style="font-size:11.5px;color:var(--pl-muted);white-space:nowrap">Click a line to research it</span></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;border-top:2px solid var(--color-divider);border-bottom:2px solid var(--color-divider)">
+              <span style="padding:9px 8px;font-size:10.5px;letter-spacing:.08em;color:var(--pl-muted);font-weight:700">LINE</span><span style="padding:9px 8px;font-size:10.5px;letter-spacing:.08em;color:var(--pl-muted);font-weight:700;text-align:center">L10 HIT</span><span style="padding:9px 8px;font-size:10.5px;letter-spacing:.08em;color:var(--pl-muted);font-weight:700;text-align:center">SEASON HIT</span><span style="padding:9px 8px;font-size:10.5px;letter-spacing:.08em;color:var(--pl-muted);font-weight:700;text-align:right">OVER</span><span style="padding:9px 8px;font-size:10.5px;letter-spacing:.08em;color:var(--pl-muted);font-weight:700;text-align:right">UNDER</span>
+            </div>
+            <sc-for list="{{ rv.alts }}" as="a" hint-placeholder-count="5">
+              <div onClick="{{ a.pick }}" style="cursor:pointer;display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;border-bottom:1px solid var(--pl-rule);align-items:center;font-size:13px;background:{{ a.rowBg }}" style-hover="background:var(--color-surface)">
+                <span style="padding:9px 8px;font-weight:800;display:flex;gap:8px;align-items:center">{{ a.line }}<sc-if value="{{ a.isMain }}"><span style="font-size:9px;font-weight:800;letter-spacing:.06em;padding:2px 4px;border:1px solid var(--color-divider);color:var(--pl-muted)">MAIN</span></sc-if></span>
+                <span style="padding:5px 8px"><span style="display:block;text-align:center;padding:3px 0;font-weight:800;background:{{ a.l10bg }};color:{{ a.l10fg }}">{{ a.l10 }}</span></span>
+                <span style="padding:5px 8px"><span style="display:block;text-align:center;padding:3px 0;font-weight:800;background:{{ a.sznBg }};color:{{ a.sznFg }}">{{ a.szn }}</span></span>
+                <span style="padding:9px 8px;text-align:right;font-weight:700">{{ a.over }}</span>
+                <span style="padding:9px 8px;text-align:right;font-weight:700">{{ a.under }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px"><h4 style="margin:0;font-size:16px">Line movement · 48h</h4><span style="font-size:11.5px;color:var(--pl-muted);white-space:nowrap">Consensus main line</span></div>
+          <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:2px solid var(--color-divider);border-bottom:1px solid var(--pl-rule)">
+            <div style="padding:10px 0;display:flex;flex-direction:column;gap:3px"><span style="font-size:10px;letter-spacing:.08em;color:var(--pl-muted);font-weight:600">OPEN</span><span style="font-size:18px;font-weight:800">{{ rv.mv.open }}</span><span style="font-size:11px;color:var(--pl-muted)">{{ rv.mv.openOdds }}</span></div>
+            <div style="padding:10px 0 10px 14px;display:flex;flex-direction:column;gap:3px;border-left:1px solid var(--pl-rule)"><span style="font-size:10px;letter-spacing:.08em;color:var(--pl-muted);font-weight:600">CURRENT</span><span style="font-size:18px;font-weight:800">{{ rv.mv.cur }}</span><span style="font-size:11px;color:{{ rv.mv.chgFg }}">{{ rv.mv.chg }}</span></div>
+            <div style="padding:10px 0 10px 14px;display:flex;flex-direction:column;gap:3px;border-left:1px solid var(--pl-rule)"><span style="font-size:10px;letter-spacing:.08em;color:var(--pl-muted);font-weight:600">CLOSING</span><span style="font-size:13px;font-weight:600;color:var(--pl-muted);padding-top:3px">Available after {{ rv.startWord }}</span></div>
+          </div>
+          <div style="background:var(--color-surface);padding:12px">
+            <div style="position:relative;aspect-ratio:640/230">
+              <sc-for list="{{ rv.mv.yTicks }}" as="t"><div style="position:absolute;left:44px;right:16px;top:{{ t.top }};border-top:1px solid var(--pl-rule)"><span style="position:absolute;left:-40px;top:-7px;font-size:10px;color:var(--pl-muted)">{{ t.v }}</span></div></sc-for>
+              <sc-for list="{{ rv.mv.xTicks }}" as="t"><span style="position:absolute;bottom:0;left:{{ t.left }};transform:translateX(-50%);font-size:10px;color:var(--pl-muted)">{{ t.v }}</span></sc-for>
+              <svg viewBox="0 0 640 230" style="position:absolute;inset:0;width:100%;height:100%;overflow:visible">
+                <path d="{{ rv.mv.path }}" fill="none" stroke="#f3f2f2" stroke-width="2.5"></path>
+                <line x1="{{ rv.mv.curX }}" x2="624" y1="{{ rv.mv.curY }}" y2="{{ rv.mv.curY }}" stroke="#f3f2f2" stroke-width="1.5" stroke-dasharray="3 4" opacity=".5"></line>
+                <rect x="{{ rv.mv.openX }}" y="{{ rv.mv.openY }}" width="10" height="10" transform="translate(-5 -5)" fill="#121110" stroke="#f3f2f2" stroke-width="2"></rect>
+                <rect x="{{ rv.mv.curX }}" y="{{ rv.mv.curY }}" width="12" height="12" transform="translate(-6 -6)" fill="var(--pl-hit)"></rect>
+              </svg>
+              <span style="position:absolute;left:{{ rv.mv.openL }};top:{{ rv.mv.openT }};transform:translate(8px,-130%);font-size:10.5px;font-weight:800;background:var(--color-bg);padding:1px 5px;border:1px solid var(--color-divider)">OPEN {{ rv.mv.open }}</span>
+              <span style="position:absolute;left:{{ rv.mv.curL }};top:{{ rv.mv.curT }};transform:translate(-100%,-150%);font-size:10.5px;font-weight:800;background:var(--pl-hit);color:#121110;padding:1px 5px">NOW {{ rv.mv.cur }}</span>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;border-top:2px solid var(--color-divider)">
+            <sc-for list="{{ rv.mv.events }}" as="e"><div style="display:grid;grid-template-columns:80px 1fr auto;gap:10px;padding:8px 0;border-bottom:1px solid var(--pl-rule);font-size:12px"><span style="color:var(--pl-muted)">{{ e.when }}</span><span>{{ e.txt }}</span><b style="color:{{ e.fg }}">{{ e.delta }}</b></div></sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  </main>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;oddsFormat&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;American&quot;,&quot;Decimal&quot;],&quot;default&quot;:&quot;American&quot;,&quot;tsType&quot;:&quot;'American'|'Decimal'&quot;},&quot;chipStyle&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Gradient&quot;,&quot;Binary&quot;],&quot;default&quot;:&quot;Gradient&quot;,&quot;tsType&quot;:&quot;'Gradient'|'Binary'&quot;,&quot;section&quot;:&quot;Hit-rate chips&quot;}}">
+const BOOKS=[{id:'dk',name:'DraftKings',abbr:'DK'},{id:'fd',name:'FanDuel',abbr:'FD'},{id:'mgm',name:'BetMGM',abbr:'MGM'},{id:'czr',name:'Caesars',abbr:'CZR'},{id:'espn',name:'ESPN Bet',abbr:'ESPN'}];
+const MKT={PTS:{label:'Points',short:'PTS',sd:m=>m*.2+2.4,step:2,unit:.5},REB:{label:'Rebounds',short:'REB',sd:m=>m*.28+1.1,step:1,unit:.5},AST:{label:'Assists',short:'AST',sd:m=>m*.3+1,step:1,unit:.5},PRA:{label:'PRA',short:'PRA',step:3,unit:.5},'3PM':{label:'3PM',short:'3PM',sd:m=>m*.42+.6,step:1,unit:.5},PASS:{label:'Pass Yds',short:'PASS YDS',sd:m=>m*.2+14,step:15,unit:1},RUSH:{label:'Rush Yds',short:'RUSH YDS',sd:m=>m*.38+8,step:10,unit:1},RECY:{label:'Rec Yds',short:'REC YDS',sd:m=>m*.42+8,step:10,unit:1},REC:{label:'Receptions',short:'REC',sd:m=>m*.3+.9,step:1,unit:.5}};
+const MKTS={nba:['PTS','REB','AST','PRA','3PM'],nfl:['PASS','RUSH','RECY','REC']};
+const TEAMS={nba:{BOS:'Boston Celtics',NYK:'New York Knicks',MIL:'Milwaukee Bucks',CLE:'Cleveland Cavaliers',DEN:'Denver Nuggets',OKC:'Oklahoma City Thunder',LAL:'Los Angeles Lakers',PHX:'Phoenix Suns',GSW:'Golden State Warriors',SAC:'Sacramento Kings'},nfl:{DET:'Detroit Lions',GB:'Green Bay Packers',SF:'San Francisco 49ers',LAR:'Los Angeles Rams',KC:'Kansas City Chiefs',BUF:'Buffalo Bills',PHI:'Philadelphia Eagles',DAL:'Dallas Cowboys'}};
+const POOL={nba:'ATL BKN CHA CHI DAL DET HOU IND LAC MEM MIA MIN NOP ORL PHI POR SAS TOR UTA WAS'.split(' '),nfl:'ARI ATL BAL CAR CHI CIN CLE DEN HOU IND JAX LV LAC MIA MIN NE NO NYG NYJ PIT SEA TB TEN WAS'.split(' ')};
+const GAMES={nba:[['BOS','NYK','7:00 PM'],['MIL','CLE','7:30 PM'],['DEN','OKC','8:00 PM'],['LAL','PHX','10:00 PM'],['GSW','SAC','10:30 PM']],nfl:[['DET','GB','1:00 PM'],['SF','LAR','4:05 PM'],['KC','BUF','4:25 PM'],['PHI','DAL','8:20 PM']]};
+const PL={nba:[
+['Darius Pembrook','BOS','SF',0,'Active',{PTS:26.8,REB:8.1,AST:4.6,'3PM':3.1},.08],
+['Malik Ashford','NYK','PG',11,'Active',{PTS:25.4,REB:3.6,AST:7.6,'3PM':2.9},-.07],
+['Koby Rennard','NYK','C',3,'Probable',{PTS:14.2,REB:11.3,AST:2.1,'3PM':.3},.12],
+['Andre Vasquez','MIL','PF',34,'Questionable',{PTS:29.6,REB:11.4,AST:6.1,'3PM':.7},-.1],
+['Evan Castellano','CLE','SG',45,'Active',{PTS:24.1,REB:4.4,AST:5.2,'3PM':3.3},.15],
+['Jordan Mbeki','CLE','C',31,'Active',{PTS:16.8,REB:10.9,AST:2.6,'3PM':.2},.02],
+['Luka Stanković','DEN','C',15,'Active',{PTS:26.1,REB:12.4,AST:9.8,'3PM':1.4},.05],
+['Cameron Oyelaran','OKC','PG',2,'Active',{PTS:31.2,REB:5.3,AST:6.2,'3PM':2.1},.1],
+['Tre Holloway','OKC','SF',8,'Active',{PTS:19.6,REB:5.8,AST:2.4,'3PM':2.4},-.14],
+['LeMarcus Dade','LAL','SF',23,'Probable',{PTS:24.3,REB:7.7,AST:8.1,'3PM':2.0},-.04],
+['Rafael Okonkwo','LAL','C',3,'Active',{PTS:23.9,REB:12.1,AST:3.4,'3PM':.4},.09],
+['Devin Marlowe','PHX','SG',1,'Active',{PTS:27.3,REB:4.5,AST:4.2,'3PM':2.6},0],
+['Stephon Rhee','GSW','PG',30,'Active',{PTS:25.9,REB:4.6,AST:6.0,'3PM':4.6},-.08],
+['Dante Whitfield','SAC','PG',5,'Questionable',{PTS:24.5,REB:4.1,AST:6.3,'3PM':2.2},.13]],
+nfl:[
+['Wyatt Sorensen','BUF','QB',17,'Active',{PASS:251,RUSH:38},.06],
+['Keon Delacroix','BUF','WR',14,'Active',{RECY:81,REC:6.4},-.08],
+['Caleb Trammell','KC','QB',15,'Active',{PASS:268,RUSH:22},-.05],
+['Isaiah Brandt','KC','WR',11,'Questionable',{RECY:74,REC:6.1},.14],
+['Marcus Tolliver','PHI','RB',26,'Active',{RUSH:96,RECY:22,REC:2.4},.1],
+['DeVonte Price','PHI','WR',11,'Active',{RECY:88,REC:6.2},-.1],
+['Tanner Holcomb','DAL','QB',4,'Active',{PASS:262,RUSH:12},.04],
+['Jaylen Okafor','DAL','WR',88,'Active',{RECY:92,REC:7.1},.12],
+['Amari Sutton','DET','RB',26,'Probable',{RUSH:78,RECY:28,REC:3.2},-.03],
+['Tyrese Whitlock','DET','WR',14,'Active',{RECY:84,REC:7.3},.08],
+['Jordan Lowery','GB','QB',10,'Active',{PASS:238,RUSH:24},-.12],
+['Christian Beaumont','SF','RB',23,'Active',{RUSH:88,RECY:36,REC:4.1},.05],
+['George Kessler','SF','TE',85,'Questionable',{RECY:58,REC:5.0},-.07],
+['Nico Albright','LAR','WR',17,'Active',{RECY:86,REC:7.4},.16]]};
+const RANGES=[{k:'L5',n:5,label:'L5',long:'Last 5'},{k:'L10',n:10,label:'L10',long:'Last 10'},{k:'L20',n:20,label:'L20',long:'Last 20'},{k:'SZN',n:1e9,label:'Season',long:'Season'}];
+const HIT='#41c975',MISS='#ff563c',INK='#f3f2f2',BG='#121110',MUTED='#a19d9d';
+let ODDS_DEC=false,BINARY=false;
+
+function rng(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function hash(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+function gauss(r){let u=0,v=0;while(!u)u=r();while(!v)v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const mean=a=>a.length?a.reduce((s,x)=>s+x,0)/a.length:0;
+const r5=v=>Math.round(v/5)*5;
+function am(p){p=clamp(p,.08,.92);return p>=.5?-r5(100*p/(1-p)):r5(100*(1-p)/p)}
+function dec(a){return a>0?1+a/100:1+100/-a}
+function fo(a){if(a==null)return '—';if(ODDS_DEC)return dec(a).toFixed(2);return a>0?'+'+a:'−'+Math.abs(a)}
+function fn(v){return Number.isInteger(v)?String(v):v.toFixed(1)}
+function phi(z){const t=1/(1+.2316419*Math.abs(z));const d=.3989423*Math.exp(-z*z/2);const p=d*t*(.3193815+t*(-.3565638+t*(1.781478+t*(-1.821256+t*1.330274))));return z>0?1-p:p}
+function st(vals,line){const n=vals.length,hits=vals.filter(v=>v>line).length,s=[...vals].sort((a,b)=>a-b);const med=n?(n%2?s[(n-1)/2]:(s[n/2-1]+s[n/2])/2):0;return{n,hits,pct:n?hits/n:0,avg:mean(vals),med}}
+const sl=(a,k)=>a.slice(0,RANGES.find(r=>r.k===k).n);
+function heat(p){if(BINARY){const h=p>=.5?150:27;return{fg:`oklch(0.84 0.15 ${h})`,bg:`oklch(0.3 0.07 ${h})`,solid:p>=.5?HIT:MISS}}const t=clamp((p-.3)/.45,0,1),h=Math.round(27+t*123);return{fg:`oklch(0.84 0.15 ${h})`,bg:`oklch(0.3 0.07 ${h})`,solid:`oklch(0.72 0.17 ${h})`}}
+function statusCol(s){return s==='Questionable'?{bg:'oklch(0.34 0.08 80)',fg:'oklch(0.88 0.14 85)'}:s==='Probable'?{bg:'oklch(0.3 0.05 200)',fg:'oklch(0.86 0.09 200)'}:s==='Out'?{bg:'oklch(0.32 0.1 27)',fg:'oklch(0.84 0.14 27)'}:{bg:'oklch(0.3 0.07 150)',fg:'oklch(0.84 0.15 150)'}}
+const initials=n=>n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+
+function build(sport){
+  const players=[],props=[];
+  const games=GAMES[sport].map((g,i)=>({id:sport+'g'+i,away:g[0],home:g[1],time:g[2]+' ET',label:g[0]+' @ '+g[1]}));
+  const all=[...Object.keys(TEAMS[sport]),...POOL[sport]];
+  PL[sport].forEach((d,pi)=>{
+    const [name,team,pos,num,status,base,trend]=d;const r=rng(hash(name+sport));
+    const game=games.find(g=>g.away===team||g.home===team);const isHome=game.home===team,opp=isHome?game.away:game.home;
+    const N=sport==='nba'?64-Math.floor(r()*26):24-Math.floor(r()*10);
+    const pool=all.filter(t=>t!==team&&t!==opp);const vsIdx=sport==='nba'?[6,23,41]:[9,19];
+    const logs=[];let day=0;
+    for(let i=0;i<N;i++){
+      day+=sport==='nba'?(r()<.3?1:2)+(r()<.08?2:0):7;
+      const dt=new Date(2026,8,24-day);
+      const mult=1+(i<10?trend:i<20?trend*.4:0);
+      const g={date:(dt.getMonth()+1)+'/'+dt.getDate(),opp:vsIdx.includes(i)?opp:pool[Math.floor(r()*pool.length)],ha:r()<.5?'H':'A'};
+      if(sport==='nba'){
+        const mn=clamp(34+gauss(r)*3.2,22,44);g.min=Math.round(mn);const mf=mn/34;
+        ['PTS','REB','AST','3PM'].forEach(k=>{g[k]=Math.max(0,Math.round(base[k]*mult*mf+gauss(r)*MKT[k].sd(base[k])))});
+        g['3PM']=Math.min(g['3PM'],Math.floor(g.PTS/3));g.PRA=g.PTS+g.REB+g.AST;
+      }else{
+        g.min=Math.round(clamp(84+gauss(r)*8,55,100))+'%';
+        Object.keys(base).forEach(k=>{g[k]=Math.round(base[k]*mult+gauss(r)*MKT[k].sd(base[k]));g[k]=Math.max(k==='RUSH'?-4:0,g[k])});
+        if(g.REC===0&&g.RECY!=null)g.RECY=0;
+      }
+      logs.push(g);
+    }
+    const player={id:sport+pi,sport,name,team,pos,num,status,opp,isHome,game,logs,N,initials:initials(name),teamName:TEAMS[sport][team],markets:[]};
+    const mk=sport==='nba'?['PTS','REB','AST','PRA'].concat(base['3PM']>=1?['3PM']:[]):MKTS.nfl.filter(k=>base[k]!=null);
+    mk.forEach(m=>{
+      const vals=logs.map(g=>g[m]);const mu=mean(vals),mu20=mean(vals.slice(0,20));
+      const line=Math.max(.5,Math.floor((.5*mu+.5*mu20)*(.97+r()*.07))+.5);
+      const sd=Math.sqrt(mean(vals.map(v=>(v-mu)**2)))||1;const unit=MKT[m].unit;
+      const p0=.45+r()*.11;
+      const books=BOOKS.map((b,bi)=>{if(bi>1&&r()<.08)return{...b,off:true};const sh=r()<.22?(r()<.5?-unit:unit):0;const bl=Math.max(.5,line+sh);const pb=p0+(r()-.5)*.05+(line-bl)/sd*.35;return{...b,line:bl,over:am(pb),under:am(1.048-pb)}});
+      let mv=[-2,-1,-1,1,1,2,0][Math.floor(r()*7)];let open=line+mv*unit;if(open<.5){open=line;mv=0}
+      const k=Math.abs(mv),sg=Math.sign(line-open);const hrs=[];while(hrs.length<k){const h=1+Math.floor(r()*46);if(!hrs.includes(h))hrs.push(h)}
+      const moves=hrs.map(h=>[h,sg*unit]);
+      if(k===0||r()<.35){const a=4+Math.floor(r()*18),b=Math.min(47,a+3+Math.floor(r()*18)),s=r()<.5?1:-1;moves.push([a,s*unit],[b,-s*unit])}
+      moves.sort((a,b)=>a[0]-b[0]);
+      const series=[];let cur=open,mi=0;for(let h=0;h<=48;h++){while(mi<moves.length&&moves[mi][0]===h){cur+=moves[mi][1];mi++}series.push(Math.max(.5,Math.round(cur*2)/2))}
+      series[48]=line;
+      props.push({id:player.id+'-'+m,sport,player,market:m,label:MKT[m].label,line,vals,sd,mu20,books,series,open,openOver:am(p0+(r()-.5)*.07),p0});
+      player.markets.push(m);
+    });
+    players.push(player);
+  });
+  return{players,props,games};
+}
+function pick(p,bid){
+  if(bid&&bid!=='best'){const b=p.books.find(x=>x.id===bid);return b.off?null:{over:b,under:b}}
+  let off=p.books.filter(b=>!b.off&&b.line===p.line);if(!off.length)off=p.books.filter(b=>!b.off);
+  let bo=off[0],bu=off[0];off.forEach(b=>{if(dec(b.over)>dec(bo.over))bo=b;if(dec(b.under)>dec(bu.under))bu=b});return{over:bo,under:bu};
+}
+function chipsFor(p,line){return RANGES.map(R=>{const s=st(sl(p.vals,R.k),line),h=heat(s.pct);return{label:R.k==='SZN'?'SZN':R.k,long:R.long,txt:R.k==='SZN'?Math.round(s.pct*100)+'%':s.hits+'/'+s.n,sub:R.k==='SZN'?s.hits+'/'+s.n+' games':Math.round(s.pct*100)+'%',pct:s.pct,bg:h.bg,fg:h.fg}})}
+function tg(on){return on?{bg:INK,fg:BG,bd:INK}:{bg:'transparent',fg:'#cfcbcb',bd:'rgba(243,242,242,.2)'}}
+
+class Component extends DCLogic {
+  state={sport:'nba',screen:'today',range:'L10',playerId:null,pMarket:null,propId:null,altLine:null,tGame:'all',tMarket:'all',tBook:'best',cMarkets:[],cBook:'best',cMin:0,cMinN:0,sortKey:'l10',sortDir:-1,q:'',qOpen:false,dateOpen:false,recent:[]};
+  get D(){return this._D||(this._D={nba:build('nba'),nfl:build('nfl')})}
+  get mainRef(){return this._mr||(this._mr=React.createRef())}
+  componentDidUpdate(pp,ps){const s=this.state;if((ps.screen!==s.screen||ps.propId!==s.propId||ps.playerId!==s.playerId||ps.sport!==s.sport)&&this.mainRef.current)this.mainRef.current.scrollTop=0}
+  setSport(sp){if(sp===this.state.sport)return;this.setState({sport:sp,tGame:'all',tMarket:'all',cMarkets:[],playerId:null,pMarket:null,propId:null,altLine:null,dateOpen:false})}
+  openProp(p){this.setState(s=>({screen:'prop',sport:p.sport,propId:p.id,playerId:p.player.id,pMarket:p.market,altLine:null,recent:[p.id,...s.recent.filter(x=>x!==p.id)].slice(0,4)}))}
+  openPlayer(pl,m){this.setState({screen:'player',sport:pl.sport,playerId:pl.id,pMarket:m||pl.markets[0],q:'',qOpen:false})}
+  findProp(id){return this.D.nba.props.find(p=>p.id===id)||this.D.nfl.props.find(p=>p.id===id)}
+  renderVals(){
+    ODDS_DEC=this.props.oddsFormat==='Decimal';BINARY=this.props.chipStyle==='Binary';
+    const s=this.state,D=this.D[s.sport],set=o=>this.setState(o),rk=s.range;
+    const R=RANGES.find(x=>x.k===rk);
+    const navI=k=>s.screen===k?{bg:'var(--pl-s2)',fg:INK,w:800}:{bg:'transparent',fg:MUTED,w:500};
+    const byL10=[...D.props].sort((a,b)=>st(sl(b.vals,'L10'),b.line).pct-st(sl(a.vals,'L10'),a.line).pct);
+    const vs=p=>(p.player.isHome?'vs ':'@ ')+p.player.opp;
+    const out={
+      nav:{today:navI('today'),cheat:navI('cheat'),player:navI('player'),prop:navI('prop')},
+      goToday:()=>set({screen:'today'}),goCheat:()=>set({screen:'cheat'}),goPlayer:()=>set({screen:'player'}),goProp:()=>set({screen:'prop',altLine:null}),
+      propCount:D.props.length,sportLabel:s.sport.toUpperCase(),
+      isToday:s.screen==='today',isCheat:s.screen==='cheat',isPlayer:s.screen==='player',isProp:s.screen==='prop',
+      mainRef:this.mainRef,
+      sportOpts:['nba','nfl'].map(k=>({label:k.toUpperCase(),...tg(s.sport===k),onClick:()=>this.setSport(k)})),
+      rangeOpts:RANGES.map(x=>({label:x.label,...tg(rk===x.k),onClick:()=>set({range:x.k})})),
+      slateSummary:`${D.games.length} ${s.sport==='nba'?'games':'games'} · ${D.props.length} props`,
+      q:s.q,onQ:e=>set({q:e.target.value,qOpen:true}),qFocus:()=>set({qOpen:true}),qBlur:()=>setTimeout(()=>this.setState({qOpen:false}),120),
+      dateOpen:s.dateOpen,toggleDate:()=>set({dateOpen:!s.dateOpen}),
+      dateOpts:[{label:'Wed, Sep 24',note:'Final · results only'},{label:'Today · Thu, Sep 25',note:'Selected',on:true},{label:'Fri, Sep 26',note:'Lines not posted'}].map(d=>({...d,fg:d.on?INK:MUTED,cursor:d.on?'pointer':'not-allowed',onClick:()=>d.on&&set({dateOpen:false})})),
+    };
+    // recent
+    out.recent=s.recent.map(id=>this.findProp(id)).filter(Boolean).map(p=>({name:p.player.name,sub:`${p.label} ${p.line} · ${p.sport.toUpperCase()}`,open:()=>this.openProp(p)}));
+    out.noRecent=!out.recent.length;
+    // search
+    const q=s.q.trim().toLowerCase();
+    const res=q?[...this.D.nba.players,...this.D.nfl.players].filter(p=>p.name.toLowerCase().includes(q)||p.team.toLowerCase()===q||p.teamName.toLowerCase().includes(q)).slice(0,8):[];
+    out.qResults=res.map((p,i)=>({name:p.name,initials:p.initials,sub:`${p.pos} · ${p.team}`,sport:p.sport.toUpperCase(),bg:i===0?'var(--pl-s2)':'transparent',pick:()=>this.openPlayer(p)}));
+    out.qShow=s.qOpen&&q.length>0;out.qEmpty=q.length>0&&!res.length;
+    out.qKey=e=>{if(e.key==='Enter'&&res[0]){this.openPlayer(res[0]);e.target.blur()}if(e.key==='Escape'){set({qOpen:false});e.target.blur()}};
+
+    // TODAY
+    out.gameChips=[{id:'all',label:'All games'},...D.games.map(g=>({id:g.id,label:`${g.label} · ${g.time.replace(' ET','')}`}))].map(c=>({label:c.label,...tg(s.tGame===c.id),onClick:()=>set({tGame:c.id})}));
+    out.marketChips=[{id:'all',label:'All markets'},...MKTS[s.sport].map(m=>({id:m,label:MKT[m].label}))].map(c=>({label:c.label,...tg(s.tMarket===c.id),onClick:()=>set({tMarket:c.id})}));
+    out.tBook=s.tBook;out.onTBook=e=>set({tBook:e.target.value});
+    if(s.screen==='today'){
+      const tp=D.props.filter(p=>(s.tGame==='all'||p.player.game.id===s.tGame)&&(s.tMarket==='all'||p.market===s.tMarket));
+      const withS=tp.map(p=>({p,rs:st(sl(p.vals,rk),p.line)})).sort((a,b)=>b.rs.pct-a.rs.pct||b.rs.avg/b.p.line-a.rs.avg/a.p.line);
+      out.cards=withS.map(({p,rs})=>{const pk=pick(p,s.tBook),sc=statusCol(p.player.status);return{name:p.player.name,initials:p.player.initials,matchup:`${p.player.team} ${vs(p)}`,time:p.player.game.time,market:p.label,line:fn(p.line),chips:chipsFor(p,p.line),avg:rs.avg.toFixed(1),med:fn(rs.med),rl:rk==='SZN'?'SZN':rk,over:pk?fo(pk.over.over):'—',overBook:pk?pk.over.abbr:'N/A',under:pk?fo(pk.under.under):'—',underBook:pk?pk.under.abbr:'N/A',status:p.player.status,statusShow:p.player.status!=='Active',statusBg:sc.bg,statusFg:sc.fg,open:()=>this.openProp(p)}});
+      out.cardsEmpty=!out.cards.length;out.todayCount=`${out.cards.length} props · sorted by ${R.long.toLowerCase()} hit rate`;
+    }else{out.cards=[];out.cardsEmpty=false}
+
+    // CHEATSHEET
+    out.cMarketChips=[{id:'all',label:'All'},...MKTS[s.sport].map(m=>({id:m,label:MKT[m].label}))].map(c=>{const on=c.id==='all'?!s.cMarkets.length:s.cMarkets.includes(c.id);return{label:c.label,...tg(on),onClick:()=>set({cMarkets:c.id==='all'?[]:(on?s.cMarkets.filter(x=>x!==c.id):[...s.cMarkets,c.id])})}});
+    out.cBook=s.cBook;out.onCBook=e=>set({cBook:e.target.value});
+    out.cMin=s.cMin;out.onCMin=e=>set({cMin:+e.target.value});out.cMinTxt=s.cMin+'%';
+    out.cMaxN=s.sport==='nba'?64:24;out.cMinN=s.cMinN;out.onCMinN=e=>set({cMinN:+e.target.value});out.cMinNTxt=s.cMinN+' gms';
+    out.resetCheat=()=>set({cMarkets:[],cBook:'best',cMin:0,cMinN:0,sortKey:'l10',sortDir:-1});
+    const COLS=[['player','Player','flex-start',1],['team','Team','flex-start',1],['opp','Opp','flex-start',1],['market','Market','flex-start',1],['line','Line','flex-end',-1],['odds','Best odds','flex-end',-1],['book','Book','flex-start',1],['l5','L5','center',-1],['l10','L10','center',-1],['l20','L20','center',-1],['szn','Szn %','center',-1],['avg','Avg','flex-end',-1],['med','Med','flex-end',-1],['n','Games','flex-end',-1]];
+    out.cols=COLS.map(([k,l,jc,d])=>({label:l,jc,fg:s.sortKey===k?INK:MUTED,arrow:s.sortKey===k?(s.sortDir<0?'↓':'↑'):'',sort:()=>set(s.sortKey===k?{sortDir:-s.sortDir}:{sortKey:k,sortDir:d})}));
+    if(s.screen==='cheat'){
+      let rows=D.props.filter(p=>!s.cMarkets.length||s.cMarkets.includes(p.market)).map(p=>{const pk=pick(p,s.cBook);const ss={};RANGES.forEach(x=>ss[x.k]=st(sl(p.vals,x.k),p.line));return{p,pk,ss}}).filter(r=>r.pk&&r.ss[rk].pct*100>=s.cMin&&r.p.player.N>=s.cMinN);
+      const val={player:r=>r.p.player.name,team:r=>r.p.player.team,opp:r=>r.p.player.opp,market:r=>r.p.label,line:r=>r.p.line,odds:r=>dec(r.pk.over.over),book:r=>r.pk.over.abbr,l5:r=>r.ss.L5.pct,l10:r=>r.ss.L10.pct,l20:r=>r.ss.L20.pct,szn:r=>r.ss.SZN.pct,avg:r=>r.ss[rk].avg,med:r=>r.ss[rk].med,n:r=>r.p.player.N}[s.sortKey];
+      rows.sort((a,b)=>{const x=val(a),y=val(b);return(typeof x==='string'?x.localeCompare(y):x-y)*s.sortDir||b.ss.L10.pct-a.ss.L10.pct});
+      out.rows=rows.map(({p,pk,ss})=>({name:p.player.name,initials:p.player.initials,pos:p.player.pos,team:p.player.team,opp:vs(p),market:p.label,line:fn(p.line),odds:'O '+fo(pk.over.over),book:pk.over.abbr,chips:['L5','L10','L20','SZN'].map(k=>{const h=heat(ss[k].pct);return{txt:k==='SZN'?Math.round(ss[k].pct*100)+'%':ss[k].hits+'/'+ss[k].n,bg:h.bg,fg:h.fg}}),avg:ss[rk].avg.toFixed(1),med:fn(ss[rk].med),n:p.player.N,open:()=>this.openProp(p)}));
+      out.rowsEmpty=!rows.length;out.cheatCount=`Showing ${rows.length} of ${D.props.length} props · avg/med over ${R.long.toLowerCase()}`;
+    }else{out.rows=[];out.rowsEmpty=false}
+
+    // PROP selection
+    let prop=D.props.find(p=>p.id===s.propId);
+    if(!prop&&s.playerId){const pl=D.players.find(x=>x.id===s.playerId);if(pl)prop=D.props.find(p=>p.player===pl&&p.market===(s.pMarket||pl.markets[0]))}
+    if(!prop)prop=byL10[0];
+
+    // PLAYER
+    if(s.screen==='player'){
+      const pl=D.players.find(x=>x.id===s.playerId)||prop.player;
+      const pm=pl.markets.includes(s.pMarket)?s.pMarket:pl.markets[0];
+      const pp=D.props.find(p=>p.player===pl&&p.market===pm);const line=pp.line;
+      const games=sl(pl.logs,rk),vals=games.map(g=>g[pm]),rs=st(vals,line),h=heat(rs.pct),sc=statusCol(pl.status);
+      const maxV=Math.max(...vals,line)*1.18||1;
+      const stepC=[1,2,5,10,20,25,50,100].find(x=>maxV/x<=5)||100;const yT=[];for(let v=0;v<=maxV;v+=stepC)yT.push({v,b:(v/maxV*100)+'%'});
+      const few=games.length<=20;
+      const bars=games.slice().reverse().map(g=>{const v=g[pm],hit=v>line;return{h:Math.max(v/maxV*100,.6)+'%',bg:hit?HIT:MISS,fg:hit?HIT:MISS,lbl:few?v:'',x:few?(g.ha==='H'?'':'@')+g.opp:'',tip:`${g.date} ${g.ha==='H'?'vs':'@'} ${g.opp} — ${v} ${MKT[pm].short}`}});
+      const split=(label,arr)=>{const v=arr.map(g=>g[pm]),x=st(v,line),hh=heat(x.pct);return{label,pct:Math.round(x.pct*100)+'%',txt:x.hits+'/'+x.n,avg:x.avg.toFixed(1),med:fn(x.med),n:x.n,fg:hh.fg}};
+      const h2hG=pl.logs.filter(g=>g.opp===pl.opp),h2h=st(h2hG.map(g=>g[pm]),line),hh=heat(h2h.pct);
+      const diff=rs.avg-line;
+      out.pv={name:pl.name,initials:pl.initials,teamName:pl.teamName,pos:pl.pos,num:pl.num,status:pl.status,statusBg:sc.bg,statusFg:sc.fg,next:`${pl.isHome?'vs':'@'} ${pl.opp}`,time:'Today '+pl.game.time,opp:pl.opp,
+        tabs:pl.markets.map(m=>({label:MKT[m].label,fg:m===pm?INK:MUTED,bar:m===pm?INK:'transparent',onClick:()=>set({pMarket:m,playerId:pl.id})})),
+        marketLabel:MKT[pm].label,statShort:MKT[pm].short,line:fn(line),rangeLabel:R.long,chartTitle:R.k==='SZN'?`All ${games.length} games`:`Last ${games.length} games`,
+        hitPct:Math.round(rs.pct*100)+'%',hitTxt:rs.hits+'/'+rs.n,hitBg:h.bg,hitFg:h.fg,avg:rs.avg.toFixed(1),med:fn(rs.med),n:rs.n,diff:(diff>=0?'+':'−')+Math.abs(diff).toFixed(1),diffFg:diff>=0?HIT:MISS,
+        yTicks:yT,bars,gap:few?'6px':'2px',linePct:(line/maxV*100)+'%',
+        splits:[split('Home · season',pl.logs.filter(g=>g.ha==='H')),split('Away · season',pl.logs.filter(g=>g.ha==='A'))],
+        h2h:{pct:h2h.n?Math.round(h2h.pct*100)+'%':'—',txt:h2h.hits+'/'+h2h.n,avg:h2h.avg.toFixed(1),fg:hh.fg,games:h2hG.map(g=>{const v=g[pm],hit=v>line;return{date:g.date,where:(g.ha==='H'?'vs ':'@ ')+g.opp,val:v,res:hit?'HIT':'MISS',bg:hit?'oklch(0.3 0.07 150)':'oklch(0.3 0.08 27)',fg:hit?'oklch(0.84 0.15 150)':'oklch(0.84 0.14 27)'}})},
+        minLabel:s.sport==='nba'?'MIN':'SNAP%',
+        log:games.map(g=>{const v=g[pm],hit=v>line,m=v-line;return{date:g.date,opp:g.opp,ha:g.ha,min:g.min,val:v,line:fn(line),margin:(m>=0?'+':'−')+fn(Math.abs(m)),res:hit?'HIT':'MISS',bg:hit?'oklch(0.3 0.07 150)':'oklch(0.3 0.08 27)',fg:hit?'oklch(0.84 0.15 150)':'oklch(0.84 0.14 27)'}}),
+        openProp:()=>this.openProp(pp)};
+    }else out.pv={tabs:[],bars:[],yTicks:[],splits:[],log:[],h2h:{games:[]}};
+
+    // PROP RESEARCH
+    if(s.screen==='prop'){
+      const p=prop,pl=p.player,line=s.altLine??p.line,unit=MKT[p.market].unit;
+      const off=p.books.filter(b=>!b.off);const bo=Math.max(...off.map(b=>dec(b.over))),bu=Math.max(...off.map(b=>dec(b.under)));
+      const hitCell={bg:'oklch(0.32 0.08 150)',fg:'oklch(0.88 0.15 150)'};
+      const books=p.books.map(b=>b.off?{abbr:b.abbr,name:b.name,line:'Not offered',lineFg:MUTED,over:'—',under:'—',overBg:'transparent',underBg:'transparent',overFg:MUTED,underFg:MUTED}:{abbr:b.abbr,name:b.name,line:fn(b.line),lineFg:b.line===p.line?INK:'oklch(0.88 0.14 85)',over:fo(b.over),under:fo(b.under),bestOver:dec(b.over)===bo,bestUnder:dec(b.under)===bu,overBg:dec(b.over)===bo?hitCell.bg:'transparent',overFg:dec(b.over)===bo?hitCell.fg:INK,underBg:dec(b.under)===bu?hitCell.bg:'transparent',underFg:dec(b.under)===bu?hitCell.fg:INK});
+      const step=MKT[p.market].step;const alts=[];
+      for(let k=-2;k<=2;k++){const L=p.line+k*step;if(L<.5)continue;const s10=st(sl(p.vals,'L10'),L),sz=st(p.vals,L);const model=1-phi((L-p.mu20)/p.sd);const pr=clamp(.5*model+.5*sz.pct+(p.p0-.5)*.5,.05,.95);const h1=heat(s10.pct),h2=heat(sz.pct);
+        alts.push({line:fn(L),isMain:k===0,l10:s10.hits+'/'+s10.n,l10bg:h1.bg,l10fg:h1.fg,szn:Math.round(sz.pct*100)+'%',sznBg:h2.bg,sznFg:h2.fg,over:fo(am(pr+.022)),under:fo(am(1-pr+.022)),rowBg:L===line?'var(--pl-s2)':'transparent',pick:()=>set({altLine:k===0?null:L})})}
+      const W=640,H=230,pL=44,pR=16,pT=18,pB=30,ser=p.series;const lo=Math.min(...ser)-unit,hi=Math.max(...ser)+unit;
+      const X=h=>pL+h/48*(W-pL-pR),Y=v=>pT+(hi-v)/(hi-lo)*(H-pT-pB);
+      let d=`M${X(0)},${Y(ser[0])}`;const ev=[];for(let h=1;h<=48;h++)if(ser[h]!==ser[h-1]){d+=` H${X(h)} V${Y(ser[h])}`;const dl=ser[h]-ser[h-1];ev.push({when:(48-h)===0?'Just now':(48-h)+'h ago',txt:`${fn(ser[h-1])} → ${fn(ser[h])}`,delta:(dl>0?'+':'−')+fn(Math.abs(dl)),fg:dl>0?HIT:MISS})}
+      d+=` H${X(48)}`;
+      let tstep=unit;while((hi-lo)/tstep>6)tstep*=2;const yT=[];for(let v=Math.ceil(lo/tstep)*tstep;v<=hi+1e-9;v+=tstep)yT.push({v:fn(v),top:(Y(v)/H*100)+'%'});
+      const chg=p.line-p.open;
+      const strip=sl(p.vals,'L10').slice().reverse().map((v,i,a)=>{const g=pl.logs[a.length-1-i];return{val:v,bg:v>line?HIT:MISS,tip:`${g.date} ${g.ha==='H'?'vs':'@'} ${g.opp}: ${v}`}});
+      out.rv={name:pl.name,initials:pl.initials,matchup:`${pl.team} ${vs(p)}`,time:pl.game.time,marketLabel:p.label,line:fn(line),mainLine:fn(p.line),isAlt:line!==p.line,resetAlt:()=>set({altLine:null}),
+        lineNote:line!==p.line?`Alternate line · main line is ${fn(p.line)}`:`Main line · ${pl.teamName} ${pl.pos} · ${p.player.N} games this season`,
+        startWord:s.sport==='nba'?'tip-off':'kickoff',
+        openPlayer:()=>this.openPlayer(pl,p.market),
+        tabs:pl.markets.map(m=>{const q=D.props.find(x=>x.player===pl&&x.market===m);return{label:MKT[m].label,line:fn(q.line),fg:m===p.market?INK:MUTED,bar:m===p.market?INK:'transparent',onClick:()=>this.openProp(q)}}),
+        chips:chipsFor(p,line),strip,books,alts,
+        mv:{path:d,openX:X(0),openY:Y(ser[0]),curX:X(48),curY:Y(ser[48]),openL:(X(0)/W*100)+'%',openT:(Y(ser[0])/H*100)+'%',curL:(X(48)/W*100)+'%',curT:(Y(ser[48])/H*100)+'%',yTicks:yT,
+          xTicks:[0,12,24,36,48].map(h=>({v:h===48?'Now':(48-h)+'h',left:(X(h)/W*100)+'%'})),open:fn(p.open),cur:fn(p.line),openOdds:'O '+fo(p.openOver),chg:chg===0?'No net change':(chg>0?'+':'−')+fn(Math.abs(chg))+' since open',chgFg:chg===0?MUTED:chg>0?HIT:MISS,
+          events:ev.reverse().concat([{when:'48h ago',txt:`Opened at ${fn(p.open)} (O ${fo(p.openOver)})`,delta:'',fg:MUTED}])}};
+    }else out.rv={tabs:[],chips:[],strip:[],books:[],alts:[],mv:{yTicks:[],xTicks:[],events:[]}};
+    return out;
+  }
+}
+</script>
+</body>
+</html>
